@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -9,33 +9,32 @@ import {
   Grid,
   theme,
 } from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import { ColorModeSwitcher } from './components/shared/ColorModeSwitcher';
+import userContext from './context/context';
 
 function App() {
+  const [user, setUser] = useState({});
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
+    <userContext.Provider value={{ user, setUser }}>
+      <ChakraProvider theme={theme}>
+        <BrowserRouter>
+          <Box textAlign="center" fontSize="xl">
+            <Grid minH="100vh" p={3}>
+              <ColorModeSwitcher justifySelf="flex-end" />
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route index path="join" element={<Signup />} />
+                <Route path="signin" element={<Login />} />
+              </Routes>
+            </Grid>
+          </Box>
+        </BrowserRouter>
+      </ChakraProvider>
+    </userContext.Provider>
   );
 }
 
