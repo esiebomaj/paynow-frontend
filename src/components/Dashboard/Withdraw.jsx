@@ -49,6 +49,7 @@ function WithdrawModal({ children, refreshTrans, banks = [] }) {
         isClosable: true,
       });
       refreshTrans();
+      refreshUser();
       onClose();
     } catch (e) {
       console.log(e?.response);
