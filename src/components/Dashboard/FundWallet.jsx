@@ -41,6 +41,7 @@ function FundWalletModal({ children, refreshTrans, banks = [] }) {
   const trRef = searchParams.get('reference');
   if (trRef) {
     refreshTrans();
+    refreshUser();
     setSearchParams({});
   }
 
