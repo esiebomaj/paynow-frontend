@@ -1,6 +1,6 @@
 import axios from 'axios';
-// BASEURL = "https://ancient-plains-65411.herokuapp.com/api/v1"
-const BASEURL = 'http://localhost:8000/api/v1';
+BASEURL = 'https://ancient-plains-65411.herokuapp.com/api/v1';
+// const BASEURL = 'http://localhost:8000/api/v1';
 const instance = axios.create({
   baseURL: BASEURL,
 });
