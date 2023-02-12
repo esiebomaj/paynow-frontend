@@ -36,7 +36,7 @@ const LoginPage = () => {
       title: title,
       description: msg,
       status: status,
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
     });
   }
@@ -65,7 +65,7 @@ const LoginPage = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  if (user) return <Navigate to="/" />;
+  if (user.username) return <Navigate to="/" />;
   return (
     <VStack spacing={20}>
       <Heading as="h3" size="lg">

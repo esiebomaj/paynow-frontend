@@ -1,21 +1,10 @@
 import {
   Text,
-  Link,
   VStack,
-  Input,
-  Stack,
-  PinInput,
-  PinInputField,
   HStack,
-  InputLeftElement,
-  InputGroup,
   Button,
   Heading,
   Spacer,
-  Flex,
-  CardBody,
-  Card,
-  useToast,
   Image,
   Divider,
   ListIcon,
@@ -32,41 +21,67 @@ import {
   Tfoot,
   Td,
   Icon,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  useToast,
+  Link,
+  Badge,
 } from '@chakra-ui/react';
-import { AtSignIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { AtSignIcon, ArrowForwardIcon, PlusSquareIcon } from '@chakra-ui/icons';
 import { FaDollarSign, FaPiggyBank } from 'react-icons/fa';
 import { MdSettings, MdCheckCircle } from 'react-icons/md';
 import { GiBanknote, GiBank } from 'react-icons/gi';
-
-const Naira = () => {
-  return (
-    <VStack position={'relative'}>
-      <Text color={'grey'} fontSize={80}>
-        N
-      </Text>
-      <div
-        style={{
-          background: 'grey',
-          width: '100%',
-          top: '45%',
-          position: 'absolute',
-          height: '4px',
-        }}
-      ></div>
-      <div
-        style={{
-          background: 'grey',
-          width: '100%',
-          top: '54%',
-          position: 'absolute',
-          height: '4px',
-        }}
-      ></div>
-    </VStack>
-  );
-};
+import React, { useContext, useEffect, useState } from 'react';
+import userContext from '../../context/context';
+import { Navigate } from 'react-router-dom';
+import { getBanks, createBankAccount } from '../../services/paynowApiService';
+import BankAccounts from './BankAccounts';
+import GettingStarted from './GettingStarted';
+import Naira from './Naira';
+import ActionRow from './ActionRow';
+import TransactionList from './TransactionList';
 
 const Dashboard = () => {
+  const { user, setUser } = useContext(userContext);
+  const [addAccoutOpen, setAddAccountOpen] = useState(false);
+  const [banks, setBanks] = useState([]);
+  const [refreshTransId, setRefreshTransId] = useState(1);
+
+  const refreshTrans = () => {
+    setRefreshTransId(refreshTrans + 1);
+  };
+
+  const getBankList = async () => {
+    try {
+      const banks = await getBanks();
+      console.log(banks);
+      setBanks(banks);
+    } catch (e) {
+      console.log(e, e.response);
+    }
+  };
+  useEffect(() => getBankList, []);
+
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'NGN',
+  });
+
+  const formatCurrency = amount => {
+    return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  };
+
+  if (!user.username) return <Navigate to="/signin" />;
   return (
     <VStack
       css={{
@@ -92,13 +107,13 @@ const Dashboard = () => {
         }}
       >
         <Text fontSize={28} fontWeight={64}>
-          Hello Jeremiah 👋
+          Hello {user.username} 👋
         </Text>
         <Text fontSize={16}>Welcome to your Paynow dashboard</Text>
       </VStack>
       <HStack>
         <Naira />
-        <Text fontSize={100}>10000.00</Text>
+        <Text fontSize={100}>{formatCurrency(user.wallet.balance)}</Text>
       </HStack>
       <Divider />
       <Box
@@ -106,160 +121,20 @@ const Dashboard = () => {
           paddingTop: '20px',
         }}
       >
-        <HStack>
-          <Button
-            leftIcon={<Icon as={FaPiggyBank} />}
-            colorScheme="blue"
-            variant="solid"
-            size="lg"
-            width={200}
-            height={50}
-            fontSize={16}
-          >
-            Recieve money
-          </Button>
-          <Spacer width={30} />
-          <Button
-            leftIcon={<Icon as={GiBanknote} />}
-            colorScheme="teal"
-            variant="solid"
-            size="lg"
-            width={300}
-            height={70}
-            fontSize={20}
-          >
-            Fund Wallet
-          </Button>
-          <Spacer width={50} />
-          <Button
-            leftIcon={<Icon as={GiBank} />}
-            colorScheme="red"
-            variant="solid"
-            width={300}
-            height={70}
-            fontSize={20}
-          >
-            Withdraw
-          </Button>
-          <Spacer width={30} />
-          <Button
-            leftIcon={<Icon as={FaDollarSign} />}
-            colorScheme="purple"
-            variant="solid"
-            width={200}
-            height={50}
-            fontSize={16}
-          >
-            Send Money
-          </Button>
-        </HStack>
+        <ActionRow refreshTrans={refreshTrans} />
       </Box>
 
       <Box>
         <HStack mt={10} css={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Box border="1px" borderColor="gray.200" p={5} borderTopRadius="md">
-            <List
-              spacing={3}
-              css={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                flexDirection: 'column',
-              }}
-            >
-              <Heading as="h4" size="md">
-                Getting Started
-              </Heading>
-              <ListItem>
-                <ListIcon as={MdCheckCircle} color="green.500" />
-                Verify you phone number
-              </ListItem>
-              <ListItem>
-                <ListIcon as={MdCheckCircle} color="green.500" />
-                Add your bank account number
-              </ListItem>
-              <ListItem>
-                <ListIcon as={MdCheckCircle} color="green.500" />
-                start recieving money
-              </ListItem>
-              <ListItem>
-                <ListIcon as={MdSettings} color="green.500" />
-                Withdraw your money to your bank
-              </ListItem>
-            </List>
-          </Box>
-          <Spacer />
-          <Spacer />
-          <Spacer />
-          <Box border="1px" borderColor="gray.200" p={5} borderTopRadius="md">
-            <TableContainer
-              css={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                flexDirection: 'column',
-              }}
-            >
-              <Heading as="h4" size="md" mb={4}>
-                Transactions{' '}
-              </Heading>
-              <Spacer />
-              <Spacer />
-              <Spacer />
-              <Table variant="striped" colorScheme="teal">
-                <TableCaption>
-                  Imperial to metric conversion factors
-                </TableCaption>
-                <Thead>
-                  <Tr>
-                    <Th>To convert</Th>
-                    <Th>into</Th>
-                    <Th isNumeric>multiply by</Th>
-                    <Th isNumeric>Amount</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>inches</Td>
-                    <Td>millimetres (mm)</Td>
-                    <Td isNumeric>25.4</Td>
-                    <Td isNumeric>10000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>feet</Td>
-                    <Td>centimetres (cm)</Td>
-                    <Td isNumeric>30.48</Td>
-                    <Td isNumeric>30000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>yards</Td>
-                    <Td>metres (m)</Td>
-                    <Td isNumeric>0.91444</Td>
-                    <Td isNumeric>9000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>yards</Td>
-                    <Td>metres (m)</Td>
-                    <Td isNumeric>0.91444</Td>
-                    <Td isNumeric>9000</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>yards</Td>
-                    <Td>metres (m)</Td>
-                    <Td isNumeric>0.91444</Td>
-                    <Td isNumeric>9000</Td>
-                  </Tr>
-                </Tbody>
-                <Tfoot>
-                  <Tr>
-                    <Th>To convert</Th>
-                    <Th>into</Th>
-                    <Th isNumeric>multiply by</Th>
-                    <Th isNumeric>Amount</Th>
-                  </Tr>
-                </Tfoot>
-              </Table>
-            </TableContainer>
-          </Box>
+          <VStack>
+            <GettingStarted />
+            <BankAccounts banks={banks} />
+          </VStack>
+          <Spacer w={10} />
+          <TransactionList refreshId={refreshTransId} />
         </HStack>
+
+        <Spacer h={15} />
       </Box>
     </VStack>
   );
