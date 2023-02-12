@@ -49,7 +49,6 @@ const LoginPage = () => {
       localStorage.setItem('access_token', res.access_token);
       localStorage.setItem('refresh_token', res.refresh_token);
       setUser(res.user);
-      console.log(res);
     } catch (e) {
       const err = e.response.data;
       for (let key in err) {
