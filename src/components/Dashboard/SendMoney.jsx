@@ -47,7 +47,6 @@ function SendMoneyModal({ children, refreshTrans, banks = [] }) {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      console.log(user, { ...data, sender_id: user.pk });
       const res = await sendMoney({ ...data, sender_id: user.pk });
       toast({
         title: 'Success',

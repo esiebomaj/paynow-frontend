@@ -27,7 +27,10 @@ const TransactionList = refreshId => {
       console.log(e, e.response);
     }
   };
-  useEffect(() => getTransactionList, [refreshId]);
+
+  useEffect(() => {
+    getTransactionList();
+  }, [refreshId]);
   return (
     <>
       <Box border="1px" borderColor="gray.200" p={5} borderTopRadius="md">

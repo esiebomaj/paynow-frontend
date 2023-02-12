@@ -45,7 +45,6 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       const res = await login(data);
-      console.log(res);
       localStorage.setItem('access_token', res.access_token);
       localStorage.setItem('refresh_token', res.refresh_token);
       setUser(res.user);
@@ -60,8 +59,6 @@ const LoginPage = () => {
   };
 
   const handleChange = e => {
-    console.log(e);
-    console.log(e, e.target.name, e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
 

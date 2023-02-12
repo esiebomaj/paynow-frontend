@@ -47,7 +47,6 @@ function FundWalletModal({ children, refreshTrans, banks = [] }) {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      console.log(data);
       const res = await fundWalletInit({ ...data, wallet_id: user.wallet.id });
       toast({
         title: 'Success',

@@ -39,7 +39,6 @@ function AddBankModal({ banks = [] }) {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      console.log(data);
       await createBankAccount(data);
       refreshUser();
       onClose();
@@ -79,7 +78,6 @@ function AddBankModal({ banks = [] }) {
               <FormLabel>Bank</FormLabel>
               <Select
                 onChange={b => {
-                  console.log(b.target.value);
                   const bank = banks.find(a => a.code === b.target.value);
                   setData({
                     ...data,

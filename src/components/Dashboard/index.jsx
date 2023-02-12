@@ -64,13 +64,14 @@ const Dashboard = () => {
   const getBankList = async () => {
     try {
       const banks = await getBanks();
-      console.log(banks);
       setBanks(banks);
     } catch (e) {
       console.log(e, e.response);
     }
   };
-  useEffect(() => getBankList, []);
+  useEffect(() => {
+    getBankList();
+  }, []);
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

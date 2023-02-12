@@ -77,7 +77,6 @@ function WithdrawModal({ children, refreshTrans, banks = [] }) {
               <Select
                 ref={initialRef}
                 onChange={b => {
-                  console.log(b.target.value);
                   const bank = banks.find(a => a.code === b.target.value);
                   setData({
                     ...data,
